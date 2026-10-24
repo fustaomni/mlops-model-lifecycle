@@ -1,0 +1,37 @@
+# contracts/publish-expectations.toml
+# THE GATES A PUBLICATION REQUIRES (D.178, R21). Every one must have passed on the gated
+# snapshot, none more and none less. They are the gates the hooks run, which is what the
+# snapshot runs offline; tests/test_publish_policy.py proves the two lists are the same.
+contract = "publish-expectations/v1"
+gates = [
+  "lint",
+  "format",
+  "types (darwin)",
+  "types (linux)",
+  "test",
+  "policy",
+  "policy decisions",
+  "repo hygiene",
+  "secrets (history)",
+  "workflows",
+  "assertions",
+  "evidence",
+  "models",
+  "exemptions",
+  "suppressions",
+  "problems",
+  "mutation anchors",
+  "schemas",
+  "nix contract",
+]
+
+# A GATE THE HOOKS SKIP, EXPECTED WHEN ITS INPUTS CHANGE (D.234). fixtures needs Databricks
+# credentials, so it is not in every publication; a commit that changes what the fixture is
+# captured from expects it, and the snapshot runs it, as CI does. A path ending in / is a folder.
+[conditional]
+fixtures = [
+  "databricks.yml",
+  "resources/",
+  "scripts/update_fixtures.py",
+  "tests/fixtures/bundle-resolved-fixture-target.json",
+]

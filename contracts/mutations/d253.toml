@@ -1,0 +1,16 @@
+# contracts/mutations/d253.toml
+# setup refills uv's cache in the running uv's format, for every group the lock pins (D.253).
+
+[[mutants]]
+id = "cache-not-refilled"
+file = "mise.toml"
+before = "uv sync --locked --all-groups --reinstall"
+after = "uv sync --locked --all-groups"
+killers = ["tests/test_setup_cache.py::test_setup_refills_the_cache_for_every_group"]
+
+[[mutants]]
+id = "groups-dropped"
+file = "mise.toml"
+before = "uv sync --locked --all-groups --reinstall"
+after = "uv sync --locked --reinstall"
+killers = ["tests/test_setup_cache.py::test_setup_refills_the_cache_for_every_group"]

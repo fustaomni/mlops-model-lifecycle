@@ -1,0 +1,9 @@
+# contracts/mutations/d252.toml
+# Policies use string interpolation wherever Regal 0.43 can tell it is equivalent (D.252).
+
+[[mutants]]
+id = "sprintf-restored"
+file = "policies/merge/readiness/readiness.rego"
+before = "\t\t\"message\": $\"{name} concluded unacceptably\","
+after = "\t\t\"message\": sprintf(\"%s concluded unacceptably\", [name]),"
+killers = ["tests/test_policy_idioms.py::test_no_policy_formats_what_interpolation_could_write"]

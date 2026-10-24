@@ -1,0 +1,30 @@
+# contracts/mutations/d234.toml
+# The publication gate runs the fixture check when the bundle changes, as CI does (D.234).
+
+[[mutants]]
+id = "conditional-ignored"
+file = "scripts/publish_policy.py"
+before = "    return (*declared.gates, *touched)"
+after = "    return declared.gates"
+killers = ["tests/test_publish_fixtures.py::test_a_bundle_change_expects_the_fixture_gate"]
+
+[[mutants]]
+id = "directory-unmatched"
+file = "scripts/publish_policy.py"
+before = "    return path == declared or (declared.endswith(\"/\") and path.startswith(declared))"
+after = "    return path == declared"
+killers = ["tests/test_publish_fixtures.py::test_a_bundle_change_expects_the_fixture_gate"]
+
+[[mutants]]
+id = "also-ignored"
+file = "scripts/check_all.py"
+before = "    return tuple(spec for spec in specs if spec.runs_in_hooks or not hooks or spec.name in also)"
+after = "    return tuple(spec for spec in specs if spec.runs_in_hooks or not hooks)"
+killers = ["tests/test_publish_fixtures.py::test_the_offline_gate_adds_only_the_gates_named"]
+
+[[mutants]]
+id = "extras-not-run"
+file = "scripts/snapshot_gate.py"
+before = "    return (*GATE, *(word for name in also for word in (\"--also\", name)))"
+after = "    return GATE"
+killers = ["tests/test_publish_fixtures.py::test_a_bundle_change_expects_the_fixture_gate"]

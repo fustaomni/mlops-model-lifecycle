@@ -1,0 +1,23 @@
+# contracts/mutations/d251.toml
+# bundle:deploy reads the plan first, records what it changes, refuses a deletion (D.251).
+
+[[mutants]]
+id = "destructive-allowed"
+file = "policies/runs/bundle_task/bundle_task.rego"
+before = "\tplanned.action in {\"delete\", \"recreate\"}"
+after = "\tfalse"
+killers = ["tests/test_bundle_plan.py::test_a_plan_that_deletes_a_resource_is_refused"]
+
+[[mutants]]
+id = "plan-unread"
+file = "scripts/bundle.py"
+before = "        planned = _planned(text)"
+after = "        planned = ()"
+killers = ["tests/test_bundle_plan.py::test_every_planned_change_is_recorded"]
+
+[[mutants]]
+id = "plan-not-applied"
+file = "scripts/bundle.py"
+before = "            (*deploy, \"--plan\", plan) if plan else deploy,"
+after = "            deploy,"
+killers = ["tests/test_bundle_plan.py::test_a_deploy_reads_the_plan_before_it_deploys"]
